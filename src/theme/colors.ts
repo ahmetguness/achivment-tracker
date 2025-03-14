@@ -1,52 +1,25 @@
-export const COLORS = {
-  // Primary Colors
-  red: "#FF5733",
-  green: "#33FF57",
-  blue: "#3357FF",
-  pink: "#FF33A6",
-  orange: "#FF8C33",
-
-  // Secondary Colors
-  purple: "#9C33FF",
-  turquoise: "#33FFF4",
-  redOrange: "#FF5733",
-  limeGreen: "#33FF85",
-  magenta: "#FF33EC",
-
-  // Neutral Colors
-  lightGrey: "#F5F5F5",
-  silver: "#C0C0C0",
-  grey: "#808080",
-  darkGrey: "#333333",
-  white: "#FFFFFF",
-
-  // Background Colors
-  veryLightGrey: "#F0F0F0",
-  lightGreyBg: "#E0E0E0",
-  lightCharcoal: "#D0D0D0",
-
-  // Alert Colors
-  errorRed: "#FF0000",
-  warningOrange: "#FFA500",
-  successGreen: "#008000",
-  alertYellow: "#FFFF00",
-
-  // Accent Colors
-  slateBlue: "#6A5ACD",
-  tomato: "#FF6347",
-  seaGreen: "#2E8B57",
-  gold: "#FFD700",
-  lightSeaGreen: "#20B2AA",
-
-  // Custom
-  deepSkyBlue: "#00BFFF",
-  crimson: "#DC143C",
-  chartreuse: "#7FFF00",
-  blueViolet: "#8A2BE2",
-  deepPink: "#FF1493",
+export const COLORS: Record<string, Record<string, string>> = {
+  light: {
+    background: "#F5F5F5",
+    card: "#FFFFFF",
+    text: "#374151",
+    primary: "#1E3A8A",
+    secondary: "#E0F2FE",
+    icon: "#1E3A8A",
+    iconInactive: "#9CA3AF",
+  },
+  dark: {
+    background: "#121212",
+    card: "#1E1E1E",
+    text: "#E5E7EB",
+    primary: "#3B82F6",
+    secondary: "#F97316",
+    icon: "#E5E7EB",
+    iconInactive: "#6B7280",
+  },
 };
 
-export const GRADIENT_COLORS: [string, string] = [
-  COLORS.slateBlue,
-  COLORS.lightSeaGreen,
-];
+// export const GRADIENTCOLORS: readonly [string, string] = [
+//   COLORS.primary,
+//   COLORS.secondary,
+// ];
