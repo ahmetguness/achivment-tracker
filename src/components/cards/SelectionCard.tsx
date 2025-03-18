@@ -6,9 +6,9 @@ import { RootState } from "../../hooks/redux_toolkit/store";
 
 interface SelectionCardProps {
   label: string;
-  description: string;
+  description: string[];
   onPress: () => void;
-  icon?: React.ReactNode;
+  icon?: string;
 }
 
 const SelectionCard: React.FC<SelectionCardProps> = ({
@@ -29,16 +29,19 @@ const SelectionCard: React.FC<SelectionCardProps> = ({
     >
       <View style={styles.labelContainer}>
         <Text style={[styles.labelText, { color: COLORS[themeMode].text }]}>
-          {label}
+          {label} {icon}
         </Text>
       </View>
-      {icon}
+
       <View style={styles.descriptionContainer}>
-        <Text
-          style={[styles.descriptionText, { color: COLORS[themeMode].text }]}
-        >
-          {description}
-        </Text>
+        {description.map((desc, index) => (
+          <Text
+            key={index}
+            style={[styles.descriptionText, { color: COLORS[themeMode].text }]}
+          >
+            - {desc}
+          </Text>
+        ))}
       </View>
     </TouchableOpacity>
   );
@@ -51,20 +54,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginHorizontal: "10%",
     height: "18%",
+    borderWidth: 0.1,
+    padding: 10,
+    justifyContent: "space-evenly",
   },
   labelContainer: {
-    width: "100%",
     alignItems: "center",
-    marginVertical: "2%",
+    justifyContent: "center",
+    marginBottom: 5,
   },
   labelText: {
-    color: COLORS.light.text,
     fontSize: 18,
     fontWeight: "bold",
   },
   descriptionContainer: {
     width: "90%",
     marginHorizontal: "5%",
+    alignItems: "flex-start",
   },
   descriptionText: {
     fontSize: 14,

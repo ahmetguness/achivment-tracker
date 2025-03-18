@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface UserState {
-  userType: string;
+  userType: "parent" | "child" | "guest" | "existingUser" | "";
 }
 
 const initialState: UserState = {

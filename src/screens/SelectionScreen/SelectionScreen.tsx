@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Button,
+  FlatList,
   Image,
   Modal,
   Text,
@@ -18,9 +19,14 @@ import { GeneralNavigationProp } from "../../types/NavigationTypes/NavigationTyp
 import { AppDispatch, RootState } from "../../hooks/redux_toolkit/store";
 import { setUserType } from "../../hooks/redux_toolkit/Slices/UserSlice";
 import { COLORS } from "../../theme/colors";
+import { selectionOptions } from "../../data/data";
+import { createUser } from "../../services/firebase/firebaseServices";
 
 const SelectionScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState("");
   const navigation = useNavigation<GeneralNavigationProp>();
   const dispatch = useDispatch<AppDispatch>();
   const themeMode = useSelector((state: RootState) => state.app.darkMode)
@@ -28,8 +34,25 @@ const SelectionScreen = () => {
     : "light";
 
   const handleUserSelection = (userType: string) => {
-    dispatch(setUserType(userType));
-    navigation.navigate("HomeScreen");
+    setSelectedUserType(userType);
+    setConfirmationModal(true); // Onay modalını aç
+  };
+
+  const confirmSelection = async () => {
+    if (!selectedUserType) return;
+
+    if (selectedUserType === "existingUser") {
+      setModalVisible(true);
+    } else {
+      const result = await createUser(selectedUserType);
+      if (result.success) {
+        dispatch(setUserType(selectedUserType));
+        navigation.navigate("HomeScreen");
+      } else {
+        console.error(`User creation failed: ${result.error}`);
+      }
+    }
+    setConfirmationModal(false);
   };
 
   return (
@@ -49,26 +72,42 @@ const SelectionScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {[
-        { label: "Parent", userType: "Parent" },
-        { label: "Child", userType: "Child" },
-        { label: "Guest", userType: "Guest" },
-      ].map(({ label, userType }) => (
+      {selectionOptions.map(({ label, userType, description, icon }) => (
         <SelectionCard
           key={userType}
           label={label}
-          description="Select this option"
+          icon={icon}
+          description={description}
           onPress={() => handleUserSelection(userType)}
         />
       ))}
 
-      <SelectionCard
-        label="Have already an account"
-        description="Sign in using QR or ID"
-        onPress={() => setModalVisible(true)}
-      />
+      {/* Kullanıcı Tipi Onay Modali */}
+      <Modal visible={confirmationModal} animationType="slide" transparent>
+        <View style={styles.modalRoot}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>
+              Are you sure you want to continue?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={confirmSelection}
+                style={styles.confirmButton}
+              >
+                <Text style={styles.buttonText}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setConfirmationModal(false)}
+                style={styles.cancelButton}
+              >
+                <Text style={styles.buttonText}>No</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
-      {/* Modal */}
+      {/* Mevcut Kullanıcı Modali */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalRoot}>
           <View style={styles.modalContent}>
@@ -78,8 +117,14 @@ const SelectionScreen = () => {
             <Text>OR</Text>
             <View>
               <Text>Enter your ID here</Text>
-              <TextInput style={styles.inputField} />
-              <TouchableOpacity>
+              <TextInput
+                style={styles.inputField}
+                value={inputValue}
+                onChangeText={setInputValue}
+              />
+              <TouchableOpacity
+                onPress={() => console.log("Submitted ID:", inputValue)}
+              >
                 <Text>Submit</Text>
               </TouchableOpacity>
             </View>
